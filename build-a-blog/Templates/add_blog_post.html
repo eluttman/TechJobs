@@ -1,0 +1,40 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+<style>
+    .error{ color: red; }
+</style>
+
+<form action= "/addpost" method="post">
+
+    <div>
+        Title for your new blog:
+    </div>
+    <div style="margin-bottom: 10px">
+        <input name= "post_title" type="text"/>
+        <span class="error"></span>
+    </div>
+    <div>
+        {% if title_error: %}
+            <td><p class="error">That's going to need a title</p></td>
+            {% endif %}
+    </div>
+    <div>
+        Your new blog:
+    </div>
+    <div style="margin-bottom: 10px">
+        <input name= "post_content" type="textarea" style="width: 400px; height: 100px">
+    </div>
+    <div>
+        {% if content_error: %}
+                <td><p class="error">Did you forget to type it out?</p></td>
+            {% endif %}
+    </div>
+
+
+
+
+    <input type="submit">
+</form>
+{% endblock %}

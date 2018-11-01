@@ -2,51 +2,86 @@ from flask import Flask, request, redirect, render_template
 from flask_sqlalchemy import SQLAlchemy
 import cgi
 import os
-#where do i put the autoescape if not using jinja
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://build-a-blog:beproductive@localhost:8889/build-a-blog'
-
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://build-a-blog:launchcode@localhost:8889/build-a-blog'
 app.config['SQLALCHEMY_ECHO'] = True
-
 db = SQLAlchemy(app)
 
-class Blogs(db.Model):
+
+class Blog(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-     id = db.Column(db.Integer, primary_key=True)
-    blog_title = db.Column(db.String(120))
-    blog_content = db.Column(db.Boolean)
+    title = db.Column(db.String(120))
+    content = db.Column(db.String(1200))
+
+    def __init__(self, title, content):
+        self.title = title
+        self.content = content
+
+    def is_valid(self):
+        if self.title and self.content:
+            return True
+        else:
+            return False
+    
     
 
-    def __init__(self, name):
-        self.name = name
+@app.route('/blogs', methods=['POST', 'GET'])
+def blog():
 
+    blog_id = request.args.get('id')
 
-blog_posts = []
-
+    if blog_id:
+        blog = Blog.query.get(blog_id)
+        return render_template('new_post_display.html', blog=blog)
+    else:
+        blog = Blog.query.all()
+        return render_template('blog.html', blogs=blog)
 @app.route('/', methods=['POST', 'GET'])
 def index():
+    # look inside the request to figure out what the user typed
+
+    blog_posts = Blog.query.all()
 
     
-    return render_template('base.html', title=title)
+    return render_template('blog.html', blogs=blog_posts, title='List O-Blogs')
+   
 
-@app.route('/', methods=['POST', 'GET'])
+
+@app.route('/addpost', methods=['POST', 'GET'])
 def add_post():
-    # look inside the request to figure out what the user typed
-    new_blog_post = request.form['blog_post_title']
 
-    # if the user typed nothing at all, redirect and tell them the error
-    if (not new_blog_post) or (not blog_post_content):
-        error = "Please specify the blog post you want to add."
-        return redirect("/?error=" + error)
+    # blog_posts = Blog.query.all()
+    if request.method == 'POST':
+        title = request.form['post_title']
+        content = request.form['post_content']
+        new_blog_post = Blog(title, content)
+        if new_blog_post.is_valid():
+            db.session.add(new_blog_post)
+            db.session.commit()
+        # return render_template('add_blog_post.html')
+            return redirect('/blogs?id=' + str(new_blog_post.id))
+    else:
+        return render_template('add_blog_post.html')
 
-    blog_post = blog_posts(new_blog_post)
-    db.session.add(new_blog_post)
-    db.session.commit()
-    return render_template('index.html', new_blog_post=new_blog_post)
+    def Determine_title_error(post_title):
+        if title == '':
+            return True
+        else:
+            return False
+    def Determine_content_error(content):
+        if post_content == '':
+            return True
+        else:
+            return False
+    
+    title_error = Determine_title_error(title)
+    content_error = Determine_content_error
+
+    if content_error or title_error:
+        return render_template('add_blog_post.html', title=title, content=content, title_error=title_error, content_error=content_error)
 
 if __name__ == '__main__':
     app.run()

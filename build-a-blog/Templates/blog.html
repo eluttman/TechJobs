@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    .error{ color: red; }
+</style>
+    {% for blog in blogs %}
+    <ul>
+    <li>
+            <h2><a href="/blogs?id={{blog.id}}">{{blog.title}}</a></h2>
+            <p>{{blog.content}}</p>
+    </li></ul>
+{%endfor%}
+{% endblock %}
