@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="/static/Style/style.css"/>
+    <h1>Welcome to Emily Luttman's Blog!</h1>
+
+    <nav style="text-align: right;">
+
+        <h4><a href="/newblog">New Blog</a>  |
+        <a href="/">Home</a></h4> 
+    </nav>
+</head>
+
+<body>
+    <div style='float: right'>
+        {% if 'user' in session %}
+          {{ session['user'] }}
+          <form action="/logout" method="post" id='logout'>
+            <input type="submit" value="Log Out" />
+          </form>
+        {% else %}
+          <a href="login">login</a> | <a href="signup">signup</a>
+        {% endif %}
+      </div>
+      <h2>
+          <a href="/blog">Blog List</a>
+      </h2>
+
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul class=flashes>
+            {% for message in messages %}
+            <li style="color:red;">{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+
+
+    {% block content %}
+
+     {% endblock %}
+
+
+
+</body>
+
+</html>

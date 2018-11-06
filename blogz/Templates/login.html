@@ -1,0 +1,14 @@
+es (11 sloc)  439 Bytes
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Login</h2>
+<form action="/login" method="post">
+  <p><label>Username<input type="text" name="username"/></label></p>
+  <p><label>Email<input type="text" name="email"/></label></p>
+  <p><label>Password<input type="password" name="password"/></label></p>
+  <p><input type="submit" value="Login"/></p>
+  <p>Don't have an account yet?</p> <a href="/signup">Create One Here!</a>
+</form>
+
+{% endblock %}
